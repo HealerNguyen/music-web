@@ -1,5 +1,8 @@
 <template>
   <div class="home-welcome flex justify-center items-center tn-banner">
+		<Head>
+			<Title>Healer 's music</Title>
+		</Head>
     <div class="w-full">
       <div class="h-2 bg-red-light"></div>
       <div class="flex items-center justify-center h-screen bg-red-lightest">
@@ -59,16 +62,10 @@
                     <path d="M4 5h3v10H4V5zm12 0v10l-9-5 9-5z" />
                   </svg>
                 </div>
-                <div class="text-white p-8 rounded-full bg-play shadow-lg">
-                  <svg
-                    class="w-8 h-8"
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M5 4h3v12H5V4zm7 0h3v12h-3V4z" />
-                  </svg>
-                </div>
+                <div class="text-white p-8 rounded-full bg-play shadow-lg" @click="playItemData()">
+                  <svg v-if="!isPlaying" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--material-symbols" width="32" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="#ffffff" d="M8 19V5l11 7Z"></path></svg>
+									<svg v-else xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--material-symbols" width="32" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="#ffffff" d="M14 19V5h4v14Zm-8 0V5h4v14Z"></path></svg>
+								</div>
                 <div class="text-grey-darker" @click="changeIndex(1)">
                   <svg
                     class="w-8 h-8"
@@ -102,7 +99,7 @@
             <div class="mt-1">
               <div class="h-1 bg-grey rounded-full">
                 <div class="w-1/5 h-1 bg-red rounded-full relative">
-								  <audio ref="audioFile" :src="currentItem.file" preload style="display: none" controls></audio>
+								  <audio ref="audioFile" :src="currentItem.file" preload style="display: none" autoplay controls></audio>
                   <!-- <span
                     class="
                       w-4
@@ -128,6 +125,7 @@
 export default {
   layout: "default",
   setup() {
+		const audioFile = ref(null);
     const playlists = ref([
         {
           name: "Người Âm Phủ",
@@ -155,6 +153,7 @@ export default {
 				}
       ])
 		const currentIndex = ref(0);
+		const isPlaying = ref(false);
 
 		const currentItem = computed(() => {
 			return playlists.value[currentIndex.value];
@@ -180,13 +179,37 @@ export default {
 					return currentIndex;
 				}
 			}
+			playAudio();
     };
+
+		const playAudio = () => {
+			audioFile.value.play()
+		}
+
+		const pauseAudio = () => {
+			audioFile.value.pause()
+		}
+
+		const playItemData = () => {
+			if (isPlaying.value) {
+				isPlaying.value = false
+				pauseAudio()
+			} else {
+				changeIndex(0);
+				isPlaying.value = true
+			}
+		}
 
     return {
 			playlists,
       currentItem,
+			audioFile,
       changeIndex,
-			randomPlayItem
+			randomPlayItem,
+			playAudio,
+			playItemData,
+			isPlaying,
+			pauseAudio
     };
   },
 };
