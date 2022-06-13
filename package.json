@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "cross-env PORT=8991 nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "start": "node .output/server/index.mjs"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^5.1.2",
+    "autoprefixer": "10.3.7",
+    "cross-env": "^7.0.3",
+    "nuxt": "3.0.0-rc.3",
+    "postcss": "8.3.9",
+    "sass": "1.43.2",
+    "sass-loader": "12.2.0"
+  },
+  "dependencies": {
+    "postcss-custom-properties": "^12.1.8"
+  }
+}
