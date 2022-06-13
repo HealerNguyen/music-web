@@ -47,3 +47,9 @@ svg {
 .bg-red {
     background-color: #f44336;
 }
+svg:hover {
+  color: #00dc82;
+}
+.progress-time {
+  transition: width 1.5s;
+}

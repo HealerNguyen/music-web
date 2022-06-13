@@ -43,7 +43,7 @@
                 <div class="text-grey-darker" @click="randomPlayItem()">
                   <svg
                     class="w-8 h-8"
-                    fill="currentColor"
+                    :fill="isRandom ? '#00dc82' : 'currentColor'"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                   >
@@ -63,8 +63,8 @@
                   </svg>
                 </div>
                 <div class="text-white p-8 rounded-full bg-play shadow-lg" @click="playItemData()">
-                  <svg v-if="!isPlaying" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--material-symbols" width="32" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="#ffffff" d="M8 19V5l11 7Z"></path></svg>
-									<svg v-else xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--material-symbols" width="32" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="#ffffff" d="M14 19V5h4v14Zm-8 0V5h4v14Z"></path></svg>
+                  <svg v-if="!isPlaying" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--material-symbols" width="32" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="currentColor" d="M8 19V5l11 7Z"></path></svg>
+									<svg v-else xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--material-symbols" width="32" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="currentColor" d="M14 19V5h4v14Zm-8 0V5h4v14Z"></path></svg>
 								</div>
                 <div class="text-grey-darker" @click="changeIndex(1)">
                   <svg
@@ -79,7 +79,7 @@
                 <div class="text-grey-darker">
                   <svg
                     class="w-8 h-8"
-                    fill="currentColor"
+                    fill="#00dc82"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                   >
@@ -93,13 +93,13 @@
           </div>
           <div class="mx-8 py-4">
             <div class="flex justify-between text-sm text-grey-darker">
-              <p>0:40</p>
-              <p>4:20</p>
+              <p>{{ currentPlayedTime }}</p>
+              <p>{{ durationFormat }}</p>
             </div>
             <div class="mt-1">
               <div class="h-1 bg-grey rounded-full">
-                <div class="w-1/5 h-1 bg-red rounded-full relative">
-								  <audio ref="audioFile" :src="currentItem.file" preload style="display: none" autoplay controls></audio>
+                <div class="progress-time h-1 bg-red rounded-full relative" :style="`width: ${progressPercentageValue}`">
+								  <audio @timeupdate="updateTimer" @ended="checkEnded" @loadeddata="loaded" ref="audioPlayer" :src="currentItem.file" preload style="display: none" autoplay controls></audio>
                   <!-- <span
                     class="
                       w-4
@@ -111,6 +111,7 @@
                       rounded-full
                       shadow
                     "
+                    :style="`left: ${progressPercentageValue}`"
                   ></span> -->
                 </div>
               </div>
@@ -125,7 +126,7 @@
 export default {
   layout: "default",
   setup() {
-		const audioFile = ref(null);
+		const audioPlayer = ref(null);
     const playlists = ref([
         {
           name: "Người Âm Phủ",
@@ -150,18 +151,82 @@ export default {
           index: 3,
           image: "https://img.youtube.com/vi/fIrB-gb0PCs/0.jpg",
           singer: "Osad",
+				},
+        {
+					id: "s2xF24SrWC8",
+					name: "Gánh Cả Thế Giới",
+          file: 'Gánh Cả Thế Giới.mp3',
+          index: 4,
+          image: "https://img.youtube.com/vi/s2xF24SrWC8/0.jpg",
+          singer: "Osad",
+				},
+        {
+					id: "PWSj5UegrdI",
+					name: "EM CÓ THỂ",
+          file: 'EM CÓ THỂ.mp3',
+          index: 5,
+          image: "https://img.youtube.com/vi/PWSj5UegrdI/0.jpg",
+          singer: "Osad",
+				},
+        {
+					id: "xdOaASWfw-M",
+					name: "Phong Tức",
+          file: 'Phong Tức.mp3',
+          index: 6,
+          image: "https://img.youtube.com/vi/xdOaASWfw-M/0.jpg",
+          singer: "Yang Yang",
+				},
+        {
+					id: "omfSvgX5Px0",
+					name: "Cô Chú",
+          file: 'Cô Chú.mp3',
+          index: 7,
+          image: "https://img.youtube.com/vi/omfSvgX5Px0/0.jpg",
+          singer: "Yang Yang",
+				},
+        {
+					id: "44wwiloXY2U",
+					name: "Thẩm viên ngoại",
+          file: 'Thẩm viên ngoại.mp3',
+          index: 8,
+          image: "https://img.youtube.com/vi/44wwiloXY2U/0.jpg",
+          singer: "Yang Yang",
+				},
+        {
+					id: "YkKif77JQWI",
+					name: "KHÔNG TRỌN VẸN NỮA",
+          file: 'KHÔNG TRỌN VẸN NỮA.mp3',
+          index: 9,
+          image: "https://img.youtube.com/vi/YkKif77JQWI/0.jpg",
+          singer: "Yang Yang",
+				},
+        {
+					id: "ZuSHTuOvSGc",
+					name: "NGƯỜI LẠ THOÁNG QUA",
+          file: 'NGƯỜI LẠ THOÁNG QUA.mp3',
+          index: 10,
+          image: "https://img.youtube.com/vi/ZuSHTuOvSGc/0.jpg",
+          singer: "Yang Yang",
 				}
       ])
 		const currentIndex = ref(0);
 		const isPlaying = ref(false);
+    const isRandom = ref(false);
+    const durationSeconds = ref(0);
+    const currentSeconds = ref(0);
 
 		const currentItem = computed(() => {
 			return playlists.value[currentIndex.value];
 		})
 
 		const randomPlayItem = () => {
+      isRandom.value = true
 			const ranItem = Math.floor(Math.random() * playlists.value.length);
 			currentIndex.value = ranItem;
+			return currentIndex
+		}
+
+    const playCurrentItem = () => {
 			return currentIndex
 		}
 
@@ -179,15 +244,24 @@ export default {
 					return currentIndex;
 				}
 			}
+      isPlaying.value = true
 			playAudio();
     };
 
 		const playAudio = () => {
-			audioFile.value.play()
+			audioPlayer.value.play()
+      durationSeconds.value = parseInt(audioPlayer.value.duration);
 		}
 
+    const formatTime = (secs: number) => {
+      var minutes = Math.floor(secs / 60) || 0;
+      var seconds = Math.floor(secs - minutes * 60) || 0;
+      return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+    }
+
+
 		const pauseAudio = () => {
-			audioFile.value.pause()
+			audioPlayer.value.pause()
 		}
 
 		const playItemData = () => {
@@ -195,21 +269,84 @@ export default {
 				isPlaying.value = false
 				pauseAudio()
 			} else {
-				changeIndex(0);
+				playCurrentItem();
+        playAudio()
 				isPlaying.value = true
 			}
 		}
 
+    const updateTimer = () => {
+      currentSeconds.value = parseInt(audioPlayer.value.currentTime);
+    }
+    
+    const durationFormat = computed(() => {
+      return formatTime(durationSeconds.value)
+    })
+
+    const currentPlayedTime = computed(() => {
+      return formatTime(currentSeconds.value);
+    })
+
+    const progressPercentageValue = computed(() => {
+      let data = (currentSeconds.value / durationSeconds.value) * 100;
+      data = parseInt(data.toString())
+      return `${data}%`
+    })
+
+    const checkEnded = () => {
+      isPlaying.value = false
+      changeIndex(1);
+    }
+
+    const loaded = () => {
+      durationSeconds.value = parseInt(audioPlayer.value.duration);
+    }
+
+    const seekToTime = (e) => {
+      if (isPlaying.value) {
+        let el = e.target.getBoundingClientRect();
+        let seekPos = (e.clientX - el.left) / el.width;
+        let seekPosPercentage = seekPos * 100 + "%";
+
+        /**
+         *  calculating the portion of the song based on where the user clicked
+         *
+         */
+
+        let songPlayTimeAfterSeek = parseInt(
+          (audioPlayer.value.duration * seekPos).toString()
+        );
+
+        audioPlayer.value.currentTime = songPlayTimeAfterSeek;
+      } else {
+        throw new Error("Song Not Loaded");
+      }
+    }
+
+
+
     return {
 			playlists,
+      isRandom,
       currentItem,
-			audioFile,
+			audioPlayer,
       changeIndex,
 			randomPlayItem,
 			playAudio,
 			playItemData,
 			isPlaying,
-			pauseAudio
+			pauseAudio,
+      playCurrentItem,
+      currentSeconds,
+      durationSeconds,
+      updateTimer,
+      durationFormat,
+      formatTime,
+      currentPlayedTime,
+      progressPercentageValue,
+      checkEnded,
+      loaded,
+      seekToTime
     };
   },
 };
